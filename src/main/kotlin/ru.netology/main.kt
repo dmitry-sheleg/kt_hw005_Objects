@@ -29,4 +29,14 @@ object WallService{
         posts += post
         return posts.last()
     }
+
+    fun update(post:Post): Boolean {
+        for ((index) in posts.withIndex()){
+            if (posts[index].postID == post.postID) {
+                posts[index] = post.copy()
+                return true
+            }
+        }
+        return false
+    }
 }
