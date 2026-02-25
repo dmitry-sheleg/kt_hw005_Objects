@@ -1,5 +1,65 @@
 package ru.netology
 
+import java.util.Objects
+
+interface Attachments{
+    val type: String
+    val attachment: Objects
+}
+
+class Audio(
+    val id: Int,
+    val ownerID: Int,
+    val artist: String,
+    val title: String,
+    val duration: String,
+    val url: String,
+    val lyricsID: Int,
+    val albumID: Int,
+    val genreID: Int,
+    val date: Int,
+    val noSearch: Boolean?,
+    val isHQ: Boolean
+)
+
+class Video(
+    val vid: Int,
+    val ownerID: Int,
+    val title: String,
+    val description: String,
+    val duration: String,
+    val link: String,
+    val image: String,
+    val imageMedium: String,
+    val date: Int,
+    val player: String
+)
+
+class Photo(
+    val id: Int,
+    val albumID: Int,
+    val ownerID: Int,
+    val userID: Int,
+    val text: String,
+    val date: Int,
+    val sizes: Array<Sizes>,
+    val width: Int,
+    val height: Int
+)
+
+data class Sizes(val type: String, val url: String, val width: Int, val height: Int)
+
+class Link(
+    val url: String,
+    val title: String,
+    val caption: String,
+    val description: String,
+    val photo: Objects,
+    val product: Objects,
+    val button: Objects,
+    val previewPage: String,
+    val previewURL: String
+)
 
 data class Post(
     val postID: Long,
