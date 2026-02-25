@@ -3,13 +3,13 @@ package ru.netology
 
 data class Post(
     val postID: Long,
-    val ownerID: Long = 0L,
-    val fromID: Long = 0L,
-    val createdBy: Long = 0L,
+    val ownerID: Long = 0,
+    val fromID: Long = 0,
+    val createdBy: Long? = null,
     val date: Long,
     val text: String,
-    val replyOwnerID: Long = 0L,
-    val comments: Comments,
+    val replyOwnerID: Long? = null,
+    val comments: Comments?,
     val canPin: Boolean = true,
     val canDelete: Boolean = true,
     val canEdit: Boolean = true
