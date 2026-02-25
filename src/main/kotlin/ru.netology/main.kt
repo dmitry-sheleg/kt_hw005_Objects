@@ -62,34 +62,29 @@ data class Note(
     val viewURL: String? = null,
 )
 
-interface Attachment {
-    val type: String
+sealed class Attachment(
+    open val type: String
+) {
+    data class AttachmentAudio(
+        val audio: Audio
+    ) : Attachment("audio")
+
+    data class AttachmentVideo(
+        val video: Video
+    ) : Attachment("video")
+
+    data class AttachmentPhoto(
+        val photo: Photo
+    ) : Attachment("photo")
+
+    data class AttachmentLink(
+        val link: Link
+    ) : Attachment("link")
+
+    data class AttachmentNote(
+        val note: Note
+    ) : Attachment("note")
 }
-
-data class AttachmentAudio(
-    override val type: String = "audio",
-    val audio: Audio
-) : Attachment
-
-data class AttachmentVideo(
-    override val type: String = "video",
-    val video: Video
-) : Attachment
-
-data class AttachmentPhoto(
-    override val type: String = "photo",
-    val photo: Photo
-) : Attachment
-
-data class AttachmentLink(
-    override val type: String = "link",
-    val link: Link
-) : Attachment
-
-data class AttachmentNote(
-    override val type: String = "note",
-    val note: Note
-) : Attachment
 
 data class Post(
     val postID: Long,
