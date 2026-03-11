@@ -109,5 +109,55 @@ class WallServiceTest {
         assertFalse(result)
     }
 
+    @Test
+    fun shouldAddCommentToExistingPost() {
+        // Arrange
+
+        val post = Post(
+            postID = 1,
+            date = 20260224145050,
+            text = "Какой-то пост",
+            comments = Comments()
+        )
+
+        WallService.add(post)
+
+        val comment = Comment(
+            fromId = 555,
+            postId = 0,
+            text = "Тестовый комментарий"
+        )
+
+        // Act
+        val createdComment = WallService.createComment(post.postID, comment)
+
+        // Assert: проверяем результаты
+        // Проверяем, что комментарий был добавлен в массив comments
+        assertTrue(WallService.getComments().contains(createdComment))
+
+        // Проверяем, что ID поста в комментарии соответствует ожидаемому
+        assertEquals(post.postID, createdComment.postId)
+
+        // Проверяем текст комментария
+        assertEquals("Тестовый комментарий", createdComment.text)
+
+        // Проверяем, что автор комментария указан верно
+        assertEquals(555, createdComment.fromId)
+    }
+
+    @Test (expected = PostNotFoundException::class)
+    fun shouldThrowPostNotFoundException() {
+        // Arrange: не добавляем никаких постов
+
+        val comment = Comment(
+            fromId = 555,
+            postId = 0,
+            text = "Комментарий к несуществующему посту"
+        )
+
+        // Act: пытаемся добавить комментарий к посту с ID=666 (которого нет)
+        WallService.createComment(666, comment)
+    }
+
 }
 
