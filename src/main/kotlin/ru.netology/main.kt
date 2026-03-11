@@ -77,6 +77,7 @@ object WallService {
 
     fun clear() {
         posts = emptyArray()
+        comments = emptyArray()
         uniqueID = 1
     }
 
