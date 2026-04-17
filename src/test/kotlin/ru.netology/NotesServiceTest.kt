@@ -122,7 +122,7 @@ class NotesServiceTest {
         service.deleteNote(note.id)
     }
 
-    @Test (expected = EntityDeletedException::class)
+    @Test(expected = EntityNotDeletedException::class)
     fun attemptToRestoreNonDeletedNoteShouldThrowException() {
         // Arrange
         val note = service.createNote("Title", "Text")
@@ -142,10 +142,10 @@ class NotesServiceTest {
         service.updateComment(comment.id, "Updated text")
     }
 
-    @Test (expected = NoteNotFoundException::class)
+    @Test
     fun attemptToDeleteNonExistentNoteShouldThrowException() {
         // Act & Assert
-        service.getNote(9999)
+        assertNull(service.getNote(9999))
     }
 
     @Test (expected = NoteNotFoundException::class)

@@ -147,7 +147,7 @@ data class Comment(
 
 // Хранилище для работы с обобщёнными сущностями
 class EntityStorage<T : CanDeleteEntity> {
-    private val entities = mutableMapOf<Int, T>()
+    val entities = mutableMapOf<Int, T>()
 
     // Создание новой сущности
     fun create(entity: T): T {
@@ -170,6 +170,9 @@ class EntityStorage<T : CanDeleteEntity> {
     // Мягкое удаление сущности
     fun delete(id: Int): T {
         val entity = entities[id] ?: throw EntityNotFoundException("Сущность с ID $id не найдена")
+        if (entity.isDeleted) {
+            throw EntityDeletedException("Сущность с ID $id уже удалена")
+        }
         entity.isDeleted = true
         return entity
     }
@@ -221,7 +224,11 @@ class NotesService {
 
     // Обновление заметки
     fun updateNote(noteId: Int, title: String, text: String): Note {
-        val note = notesStorage.get(noteId) ?: throw NoteNotFoundException("Note with ID $noteId not found")
+        val note = notesStorage.entities[noteId]
+            ?: throw NoteNotFoundException("Note with ID $noteId not found")
+        if (note.isDeleted) {
+            throw EntityDeletedException("Невозможно обновление удалённой заметки с ID: $noteId")
+        }
         note.title = title
         note.text = text
         return notesStorage.update(note)
@@ -229,8 +236,11 @@ class NotesService {
 
     // Удаление заметки (и всех её комментариев)
     fun deleteNote(noteId: Int): Note {
-        val note = notesStorage.get(noteId) ?: throw NoteNotFoundException("Note with ID $noteId not found")
-
+        val note = notesStorage.entities[noteId]
+            ?: throw NoteNotFoundException("Note with ID $noteId not found")
+        if (note.isDeleted) {
+            throw EntityDeletedException("Невозможно удаление уже удалённой заметки с ID: $noteId")
+        }
         // Помечаем все комментарии заметки как удалённые
         note.comments.forEach { comment ->
             commentsStorage.delete(comment.id)
@@ -258,8 +268,11 @@ class NotesService {
 
     // Обновление комментария
     fun updateComment(commentId: Int, text: String): Comment {
-        val comment =
-            commentsStorage.get(commentId) ?: throw CommentNotFoundException("Comment with ID $commentId not found")
+        val comment = commentsStorage.entities[commentId]
+            ?: throw CommentNotFoundException("Comment with ID $commentId not found")
+        if (comment.isDeleted) {
+            throw EntityDeletedException("Невозможно обновление удалённого комментария с ID: $commentId")
+        }
         comment.text = text
         return commentsStorage.update(comment)
     }
